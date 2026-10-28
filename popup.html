@@ -14,24 +14,7 @@
 
     <section class="today">
       <p id="headline" class="headline"></p>
-
-      <div class="row" data-type="shorts">
-        <div class="row-top">
-          <span class="dot dot-shorts"></span>
-          <span class="row-name" data-i18n="shorts"></span>
-          <span class="row-value" id="shorts-value"></span>
-        </div>
-        <div class="track"><div class="fill fill-shorts" id="shorts-bar"></div></div>
-      </div>
-
-      <div class="row" data-type="videos">
-        <div class="row-top">
-          <span class="dot dot-videos"></span>
-          <span class="row-name" data-i18n="videos"></span>
-          <span class="row-value" id="videos-value"></span>
-        </div>
-        <div class="track"><div class="fill fill-videos" id="videos-bar"></div></div>
-      </div>
+      <div id="rows"></div>
     </section>
 
     <section class="week">
@@ -47,6 +30,7 @@
       <button id="clear" type="button" data-i18n="clearData"></button>
     </footer>
 
+    <script src="shared.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

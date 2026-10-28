@@ -1,26 +1,23 @@
-// video-counter content script
+// video-counter core
 //
-// Counts the YouTube Shorts / regular videos you open and the real time you
-// spend actually playing them. Everything is stored locally in
-// chrome.storage.local as { "YYYY-MM-DD": { shorts: {count, seconds}, videos: {count, seconds} } }.
+// Runs on every supported site together with exactly one platform adapter
+// (platforms/<site>.js). The adapter only answers "what is this page?"; this
+// file does the counting, timing, batching and storing.
+//
+// Stored in chrome.storage.local, one record per local day:
+//   { "YYYY-MM-DD": { "youtube:shorts": { count, seconds }, "instagram:reels": { ... } } }
 (() => {
   'use strict';
 
-  const TYPES = ['shorts', 'videos'];
+  const platform = globalThis.VC_PLATFORM;
+  if (!platform) return;
+  const { localDay, migrateDay } = globalThis.VC;
+
   const TICK_MS = 1000; // sample playback state once per second
   const FLUSH_MS = 10000; // write to storage every 10 seconds, not every second
-  const SESSION_KEY = 'video-counter:last';
+  const SESSION_KEY = `video-counter:last:${platform.id}`;
 
-  const empty = () => ({
-    shorts: { count: 0, seconds: 0 },
-    videos: { count: 0, seconds: 0 },
-  });
-
-  const pad = (n) => String(n).padStart(2, '0');
-  const localDay = (d = new Date()) =>
-    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
-  let pending = empty(); // counted in memory, not yet written
+  let pending = {}; // counted in memory, not yet written: { typeId: { count, seconds } }
   let pendingDay = localDay(); // which day `pending` belongs to
   let lastKey = null; // the video we have already counted
   let tickTimer = null;
@@ -44,26 +41,29 @@
     }
   }
 
-  // Shorts: /shorts/<id>    Regular videos: /watch?v=<id>
-  function getCurrent() {
-    const { pathname, searchParams } = new URL(location.href);
-    if (/^\/shorts\/[\w-]+/.test(pathname)) {
-      return { type: 'shorts', key: pathname };
-    }
-    if (pathname === '/watch' && searchParams.get('v')) {
-      return { type: 'videos', key: 'v=' + searchParams.get('v') };
+  function bump(typeId, field, n) {
+    const entry = pending[typeId] || (pending[typeId] = { count: 0, seconds: 0 });
+    entry[field] += n;
+  }
+
+  // Real <video> elements get a stable number so an adapter can tell videos apart
+  // when the URL does not change. This only looks at <video> elements, never at
+  // a site's own markup, which changes all the time.
+  const elementIds = new WeakMap();
+  let nextElementId = 1;
+
+  // Returns a key for the video that is playing right now, or null if none is.
+  function playingVideoKey() {
+    for (const v of document.querySelectorAll('video')) {
+      if (!v.paused && !v.ended && v.readyState > 2) {
+        if (!elementIds.has(v)) elementIds.set(v, nextElementId++);
+        return `${elementIds.get(v)}:${v.currentSrc || v.src || ''}`;
+      }
     }
     return null;
   }
 
-  // Any <video> actually playing counts, so we do not depend on YouTube's DOM
-  // layout. Real seconds are counted (not video time), so 2x speed is not inflated.
-  function isPlaying() {
-    for (const v of document.querySelectorAll('video')) {
-      if (!v.paused && !v.ended && v.readyState > 2) return true;
-    }
-    return false;
-  }
+  const ctx = { playingVideoKey };
 
   // After the extension is reloaded or updated, old content scripts lose access
   // to the chrome.* APIs. Detect that and stop quietly.
@@ -91,18 +91,22 @@
       pendingDay = today;
     }
 
-    const cur = getCurrent();
+    // The adapter returns null (not a video page) or { type, key }. A null key
+    // means "on a video page but cannot tell which video yet": time still counts,
+    // the video is counted once a key is known.
+    const cur = platform.getCurrent(new URL(location.href), ctx);
     if (!cur) {
       setLast(null); // left the video: opening it again counts again
       return;
     }
     if (document.hidden) return; // only count tabs you are looking at
 
-    if (cur.key !== lastKey) {
+    const typeId = `${platform.id}:${cur.type}`;
+    if (cur.key != null && cur.key !== lastKey) {
       setLast(cur.key);
-      pending[cur.type].count++;
+      bump(typeId, 'count', 1);
     }
-    if (isPlaying()) pending[cur.type].seconds++;
+    if (playingVideoKey() !== null) bump(typeId, 'seconds', 1);
   }
 
   // Several tabs may flush at once; the Web Lock keeps read-modify-write atomic.
@@ -113,18 +117,19 @@
   async function flush() {
     const snap = pending;
     const day = pendingDay;
-    if (!TYPES.some((t) => snap[t].count || snap[t].seconds)) return;
-    pending = empty(); // reset synchronously so nothing is counted twice
+    const ids = Object.keys(snap);
+    if (!ids.some((id) => snap[id].count || snap[id].seconds)) return;
+    pending = {}; // reset synchronously so nothing is counted twice
 
     try {
       await withLock(async () => {
         const res = await chrome.storage.local.get(day);
-        const data = res[day] || empty();
-        for (const t of TYPES) {
-          const cur = data[t] || { count: 0, seconds: 0 };
-          data[t] = {
-            count: (cur.count || 0) + snap[t].count,
-            seconds: (cur.seconds || 0) + snap[t].seconds,
+        const data = migrateDay(res[day]); // also converts 0.1-format records
+        for (const id of ids) {
+          const cur = data[id] || { count: 0, seconds: 0 };
+          data[id] = {
+            count: cur.count + snap[id].count,
+            seconds: cur.seconds + snap[id].seconds,
           };
         }
         await chrome.storage.local.set({ [day]: data });
@@ -132,9 +137,9 @@
     } catch (_) {
       if (!alive() || day !== pendingDay) return;
       // Writing failed: put the numbers back and retry on the next flush.
-      for (const t of TYPES) {
-        pending[t].count += snap[t].count;
-        pending[t].seconds += snap[t].seconds;
+      for (const id of ids) {
+        bump(id, 'count', snap[id].count);
+        bump(id, 'seconds', snap[id].seconds);
       }
     }
   }

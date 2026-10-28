@@ -3,10 +3,10 @@
     "message": "Video Counter"
   },
   "extDescription": {
-    "message": "統計你每天看了幾支 YouTube Shorts 和影片，以及花了多少時間。"
+    "message": "統計你每天看了幾支 YouTube Shorts、YouTube 影片和 Instagram Reels，以及花了多少時間。"
   },
   "headline": {
-    "message": "你今天在 YouTube 上花了 $time$。",
+    "message": "你今天看影片花了 $time$。",
     "placeholders": {
       "time": { "content": "$1" }
     }
@@ -14,11 +14,14 @@
   "noData": {
     "message": "今天還沒有任何紀錄。"
   },
-  "shorts": {
-    "message": "Shorts"
+  "type_youtube_shorts": {
+    "message": "YouTube Shorts"
   },
-  "videos": {
-    "message": "影片"
+  "type_youtube_videos": {
+    "message": "YouTube 影片"
+  },
+  "type_instagram_reels": {
+    "message": "Instagram Reels"
   },
   "last7days": {
     "message": "近 7 天"

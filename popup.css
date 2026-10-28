@@ -4,8 +4,10 @@
   --muted: #6b6b76;
   --line: #e6e6ec;
   --track: #efeff4;
-  --shorts: #f97316;
-  --videos: #6366f1;
+  /* one colour per countable type, named --c-<platform>-<type> (see shared.js) */
+  --c-youtube-shorts: #f97316;
+  --c-youtube-videos: #6366f1;
+  --c-instagram-reels: #ec4899;
   color-scheme: light dark;
 }
 
@@ -16,8 +18,9 @@
     --muted: #9a9aa8;
     --line: #2f2f38;
     --track: #2a2a33;
-    --shorts: #fb923c;
-    --videos: #818cf8;
+    --c-youtube-shorts: #fb923c;
+    --c-youtube-videos: #818cf8;
+    --c-instagram-reels: #f472b6;
   }
 }
 
@@ -91,16 +94,6 @@ h2 {
   border-radius: 50%;
 }
 
-.dot-shorts,
-.fill-shorts {
-  background: var(--shorts);
-}
-
-.dot-videos,
-.fill-videos {
-  background: var(--videos);
-}
-
 .track {
   height: 6px;
   border-radius: 3px;
@@ -162,14 +155,6 @@ h2 {
 
 .seg {
   flex-basis: 0;
-}
-
-.seg-shorts {
-  background: var(--shorts);
-}
-
-.seg-videos {
-  background: var(--videos);
 }
 
 .lbl {

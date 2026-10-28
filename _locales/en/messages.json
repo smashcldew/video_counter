@@ -3,10 +3,10 @@
     "message": "Video Counter"
   },
   "extDescription": {
-    "message": "Counts how many YouTube Shorts and videos you watch each day, and how much time they take."
+    "message": "Counts the YouTube Shorts, YouTube videos and Instagram Reels you watch each day, and how much time they take."
   },
   "headline": {
-    "message": "You've spent $time$ on YouTube today.",
+    "message": "You've spent $time$ watching videos today.",
     "placeholders": {
       "time": { "content": "$1" }
     }
@@ -14,11 +14,14 @@
   "noData": {
     "message": "Nothing counted yet today."
   },
-  "shorts": {
-    "message": "Shorts"
+  "type_youtube_shorts": {
+    "message": "YouTube Shorts"
   },
-  "videos": {
-    "message": "Videos"
+  "type_youtube_videos": {
+    "message": "YouTube videos"
+  },
+  "type_instagram_reels": {
+    "message": "Instagram Reels"
   },
   "last7days": {
     "message": "Last 7 days"
