@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Video Counter</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1 data-i18n="extName"></h1>
+      <span id="date" class="muted"></span>
+    </header>
+
+    <section class="today">
+      <p id="headline" class="headline"></p>
+
+      <div class="row" data-type="shorts">
+        <div class="row-top">
+          <span class="dot dot-shorts"></span>
+          <span class="row-name" data-i18n="shorts"></span>
+          <span class="row-value" id="shorts-value"></span>
+        </div>
+        <div class="track"><div class="fill fill-shorts" id="shorts-bar"></div></div>
+      </div>
+
+      <div class="row" data-type="videos">
+        <div class="row-top">
+          <span class="dot dot-videos"></span>
+          <span class="row-name" data-i18n="videos"></span>
+          <span class="row-value" id="videos-value"></span>
+        </div>
+        <div class="track"><div class="fill fill-videos" id="videos-bar"></div></div>
+      </div>
+    </section>
+
+    <section class="week">
+      <div class="week-head">
+        <h2 data-i18n="last7days"></h2>
+        <span id="worst" class="muted"></span>
+      </div>
+      <div id="chart" class="chart" role="img"></div>
+    </section>
+
+    <footer>
+      <span class="muted" data-i18n="privacyNote"></span>
+      <button id="clear" type="button" data-i18n="clearData"></button>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

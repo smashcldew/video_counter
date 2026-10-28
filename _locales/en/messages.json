@@ -1,0 +1,61 @@
+{
+  "extName": {
+    "message": "Video Counter"
+  },
+  "extDescription": {
+    "message": "Counts how many YouTube Shorts and videos you watch each day, and how much time they take."
+  },
+  "headline": {
+    "message": "You've spent $time$ on YouTube today.",
+    "placeholders": {
+      "time": { "content": "$1" }
+    }
+  },
+  "noData": {
+    "message": "Nothing counted yet today."
+  },
+  "shorts": {
+    "message": "Shorts"
+  },
+  "videos": {
+    "message": "Videos"
+  },
+  "last7days": {
+    "message": "Last 7 days"
+  },
+  "worstDay": {
+    "message": "Worst: $day$ ($time$)",
+    "placeholders": {
+      "day": { "content": "$1" },
+      "time": { "content": "$2" }
+    }
+  },
+  "fmtSec": {
+    "message": "$secs$ sec",
+    "placeholders": {
+      "secs": { "content": "$1" }
+    }
+  },
+  "fmtMin": {
+    "message": "$mins$ min",
+    "placeholders": {
+      "mins": { "content": "$1" }
+    }
+  },
+  "fmtHM": {
+    "message": "$hours$h $mins$m",
+    "placeholders": {
+      "hours": { "content": "$1" },
+      "mins": { "content": "$2" }
+    }
+  },
+  "privacyNote": {
+    "message": "All data stays in your browser."
+  },
+  "clearData": {
+    "message": "Clear data"
+  },
+  "confirmClear": {
+    "message": "Delete all counted data? This cannot be undone."
+  }
+}

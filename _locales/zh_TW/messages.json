@@ -1,0 +1,61 @@
+{
+  "extName": {
+    "message": "Video Counter"
+  },
+  "extDescription": {
+    "message": "統計你每天看了幾支 YouTube Shorts 和影片，以及花了多少時間。"
+  },
+  "headline": {
+    "message": "你今天在 YouTube 上花了 $time$。",
+    "placeholders": {
+      "time": { "content": "$1" }
+    }
+  },
+  "noData": {
+    "message": "今天還沒有任何紀錄。"
+  },
+  "shorts": {
+    "message": "Shorts"
+  },
+  "videos": {
+    "message": "影片"
+  },
+  "last7days": {
+    "message": "近 7 天"
+  },
+  "worstDay": {
+    "message": "最慘：$day$（$time$）",
+    "placeholders": {
+      "day": { "content": "$1" },
+      "time": { "content": "$2" }
+    }
+  },
+  "fmtSec": {
+    "message": "$secs$ 秒",
+    "placeholders": {
+      "secs": { "content": "$1" }
+    }
+  },
+  "fmtMin": {
+    "message": "$mins$ 分鐘",
+    "placeholders": {
+      "mins": { "content": "$1" }
+    }
+  },
+  "fmtHM": {
+    "message": "$hours$ 小時 $mins$ 分",
+    "placeholders": {
+      "hours": { "content": "$1" },
+      "mins": { "content": "$2" }
+    }
+  },
+  "privacyNote": {
+    "message": "所有資料只存在你的瀏覽器。"
+  },
+  "clearData": {
+    "message": "清除資料"
+  },
+  "confirmClear": {
+    "message": "要刪除所有已記錄的資料嗎？此動作無法復原。"
+  }
+}
